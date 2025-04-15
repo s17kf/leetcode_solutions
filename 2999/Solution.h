@@ -13,58 +13,108 @@ using namespace std;
 
 class Solution {
 public:
-    long long numberOfPowerfulInt(long long start, long long finish, int limit, const string &s) {
-        long long x = stoll(s);
-        int exp = s.size();
-        long long div = pow(10, exp);
+    long long numberOfPowerfulInt(long long start, long long finish, int limit, string s) {
         char limitC = '0' + limit;
-        long long result = 0;
-        long long number;
-        if (start < x) {
-            number = x;
-        } else {
-            number = start - (start % div) + x;
-            if (number < start)
-                number += div;
+        long long x = stoll(s);
+
+        string finishStr = to_string(finish);
+        string startStr = to_string(start);
+
+        if (x > finish) {
+            return 0;
         }
 
-        long long div2 = div * 1000000;
 
-        long long powerfulIntegersInDiv2 = 0;
-        for (long long i = x; i < div2; i += div) {
-            const string numberStr = to_string(i);
-            if (none_of(numberStr.begin(), numberStr.end(), [&limitC](char c) { return c > limitC; }))
-                ++powerfulIntegersInDiv2;
-        }
+        long long result = countPowerfulNumsLessThan(s, finishStr, limit);
 
-        long long start2 = start - (start % div2) + div2;
-        long long finish2 = finish - (finish % div2);
-        for (int i = start2; i < finish2; i += div2) {
-            const string numberStr = to_string(i);
-            if (none_of(numberStr.begin(), numberStr.end(), [&limitC](char c) { return c > limitC; }))
-                result += powerfulIntegersInDiv2;
-        }
+        // if (x < start) {
+        //     result -= countPowerfulNumsLessThan(s, startStr, limit);
+        // }
 
-        if (start2 > finish2) {
-            for (; number <= finish; number += div) {
-                const string numberStr = to_string(number);
-                if (none_of(numberStr.begin(), numberStr.end(), [&limitC](char c) { return c > limitC; }))
-                    ++result;
+        // long long missingNumbers = 1;
+        // for (int i = firstIndex; i > 0; --i) {
+        //     missingNumbers *= min(limit + 1, finishStr[i] - '0' + 1);
+        // }
+        //
+        // result += missingNumbers - 1;
+
+
+
+
+
+        return result;
+    }
+
+    long long countPowerfulNumsLessThan(string s, string finishStr, int limit) {
+        if (s.length() == finishStr.length()) {
+            if (s < finishStr) {
+                return 1;
             }
-            return result;
+            return 0;
         }
 
-        for (; number < start2; number += div) {
-            const string numberStr = to_string(number);
-            if (none_of(numberStr.begin(), numberStr.end(), [&limitC](char c) { return c > limitC; }))
-                ++result;
-        }
-        for (number = finish2 + x; number < finish; number += div) {
-            const string numberStr = to_string(number);
-            if (none_of(numberStr.begin(), numberStr.end(), [&limitC](char c) { return c > limitC; }))
-                ++result;
+        long long result = 1;
+
+        int firstIndex = finishStr.length() - s.length() - 1;
+
+        for (int i = firstIndex; i > 0; --i) {
+            result *= limit + 1;
         }
 
+        if (finishStr[0] - '0' > limit) {
+            return result * (limit + 1);
+        }
+
+        result *= finishStr[0] - '0';
+
+
+        // long long missingNumbers = 1;
+        // for (int i = firstIndex; i > 0; --i) {
+        //     missingNumbers *= limit + 1;
+        // }
+        // result += missingNumbers - 1;
+
+        long long tooBigNums = 1;
+
+        // long long tooBigNums = 0;
+        // long long tooBigNumsLessDigits = 1;
+        // if (s[0] <= finishStr[firstIndex + 1] && s[0] - '0' <= limit) {
+        //     tooBigNumsLessDigits = finishStr[firstIndex + 1] - s[0];
+        //     if (finishStr.substr(firstIndex + 2) == s.substr(1)) {
+        //         ++tooBigNumsLessDigits;
+        //     }
+        // }
+        // for (int i = firstIndex; i > 0; --i) {
+        //     if (finishStr[i] - '0' > limit) {
+        //         continue;
+        //     }
+        //
+        //     tooBigNumsLessDigits *= limit - (finishStr[i] - '0');
+        //     tooBigNums += tooBigNumsLessDigits;
+        // }
+        // result -= tooBigNums;
+
+        return result;
+    }
+
+    long long countIterative(long long first, long long last, int limit, string s) {
+        long long result = 0;
+        for (long long i = first; i <= last; ++i) {
+            string str = to_string(i);
+            if (str.length() != s.length()) {
+                continue;
+            }
+            bool isPowerful = true;
+            for (int j = 0; j < str.length(); ++j) {
+                if (str[j] > s[j] + limitC) {
+                    isPowerful = false;
+                    break;
+                }
+            }
+            if (isPowerful) {
+                ++result;
+            }
+        }
         return result;
     }
 };

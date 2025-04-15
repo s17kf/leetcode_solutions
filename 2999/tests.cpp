@@ -59,3 +59,19 @@ TEST_F(Tests_2999, test_6) {
     string s = "1";
     ASSERT_EQ(4194295, Solution().numberOfPowerfulInt(start, finish, limit, s));
 }
+
+TEST_F(Tests_2999, test_7) {
+    long long start = 1;
+    long long finish = 1114;
+    long long limit = 9;
+    string s = "27";
+    ASSERT_EQ(11, Solution().numberOfPowerfulInt(start, finish, limit, s));
+}
+
+TEST_F(Tests_2999, test_8) {
+    long long start = 1;
+    long long finish = 11114;
+    long long limit = 9;
+    string s = "27";
+    ASSERT_EQ(111, Solution().numberOfPowerfulInt(start, finish, limit, s));
+}
